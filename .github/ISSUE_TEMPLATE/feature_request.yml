@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest a new tool, AI-client integration, or improvement.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Concrete is good. "I'm reverse-engineering X and Aether MCP can't help because Y" is way better than "we should support Z."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What new tool / API / behavior would fix the problem? If you have an idea for the tool name + input schema, sketch it here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Did you try a workaround? What didn't work?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: who-benefits
+    attributes:
+      label: Who benefits?
+      multiple: true
+      options:
+        - Reverse engineers / malware analysts
+        - Game modders / cheat devs (own use only)
+        - Security researchers / pentesters
+        - Web scrapers / OSINT
+        - Fiction writers
+        - General chat users
+        - All of the above
+    validations:
+      required: false

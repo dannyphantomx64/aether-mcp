@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discord community
+    url: https://discord.gg/qNbppsTnQM
+    about: Quick questions, setup help, or sharing prompts? Hop into Discord.
+  - name: Aether website
+    url: https://trynoguard.com
+    about: Sign up, manage API keys, top up credits.
+  - name: Setup walkthrough
+    url: https://trynoguard.com/mcp/setup
+    about: Step-by-step install guide.
+  - name: Security report
+    url: https://github.com/dannyphantomx64/aether-mcp/security/advisories/new
+    about: Report a security issue privately.

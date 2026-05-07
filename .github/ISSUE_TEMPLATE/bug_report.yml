@@ -1,0 +1,92 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please fill out as much as you can — incomplete reports often can't be acted on.
+
+        **Don't paste your real API key.** Redact it as `ak_live_REDACTED`.
+
+  - type: dropdown
+    id: ai-client
+    attributes:
+      label: AI client
+      description: Which AI client are you using the MCP from?
+      options:
+        - Claude Desktop
+        - Cursor
+        - Cline (VS Code)
+        - Zed
+        - Continue
+        - Custom / other (describe in details)
+    validations:
+      required: true
+
+  - type: input
+    id: ai-client-version
+    attributes:
+      label: AI client version
+      placeholder: e.g. Claude Desktop 0.7.4
+    validations:
+      required: false
+
+  - type: input
+    id: mcp-version
+    attributes:
+      label: "@aether/mcp version"
+      placeholder: e.g. 0.1.0
+      description: Run `npm view @aether/mcp version` if you're not sure.
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: e.g. v20.10.0
+      description: Output of `node --version`
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. macOS 14.5, Windows 11, Ubuntu 22.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug. Include the exact prompt you sent if relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: Full error output
+      description: Paste the full error message, stack trace, or AI-client console output. Redact your API key.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your MCP config (REDACT KEY)
+      description: Paste the relevant section of your AI-client config file. Replace your API key with `ak_live_REDACTED`.
+      render: json
+    validations:
+      required: false

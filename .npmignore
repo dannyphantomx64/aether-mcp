@@ -1,0 +1,22 @@
+# Source files — only ship dist/ to npm
+src/
+tests/
+
+# Dev configs
+tsconfig.json
+.gitignore
+
+# CI
+.github/
+
+# Repo-only docs
+CONTRIBUTING.md
+CHANGELOG.md
+SECURITY.md
+
+# Local
+.env
+.env.local
+node_modules/
+*.tsbuildinfo
+worker.log
