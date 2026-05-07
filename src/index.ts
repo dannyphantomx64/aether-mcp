@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Aether MCP server. Entry point for `npx @aether/mcp`.
+// Aether MCP server. Entry point for `npx aether-mcp`.
 //
 // Speaks MCP over stdio to a host AI client (Claude Desktop, Cursor, Cline,
 // Zed, etc.). Forwards tool calls to https://trynoguard.com/api/v1/* with

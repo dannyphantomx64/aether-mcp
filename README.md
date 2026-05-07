@@ -1,4 +1,4 @@
-# @aether/mcp
+# aether-mcp
 
 Uncensored AI tools for any [Model Context Protocol](https://modelcontextprotocol.io) client — Claude Desktop, Cursor, Cline, Zed, Continue, and others.
 
@@ -26,7 +26,7 @@ When your main AI refuses a question, **Aether answers it.** Built for reverse e
 
 ```bash
 # No install needed — npx fetches it on demand.
-npx -y @aether/mcp
+npx -y aether-mcp
 ```
 
 You don't run this directly. Instead, your AI client launches it as a child process. Add the config below.
@@ -48,7 +48,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "aether": {
       "command": "npx",
-      "args": ["-y", "@aether/mcp"],
+      "args": ["-y", "aether-mcp"],
       "env": {
         "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
       }
@@ -68,7 +68,7 @@ Restart Claude Desktop. You'll see the Aether tools in the tool palette.
   "mcpServers": {
     "aether": {
       "command": "npx",
-      "args": ["-y", "@aether/mcp"],
+      "args": ["-y", "aether-mcp"],
       "env": { "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" }
     }
   }
@@ -84,7 +84,7 @@ In Cline settings → **MCP Servers** → **Edit MCP Settings**:
   "mcpServers": {
     "aether": {
       "command": "npx",
-      "args": ["-y", "@aether/mcp"],
+      "args": ["-y", "aether-mcp"],
       "env": { "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" },
       "disabled": false,
       "autoApprove": []
@@ -103,7 +103,7 @@ In Cline settings → **MCP Servers** → **Edit MCP Settings**:
     "aether": {
       "command": {
         "path": "npx",
-        "args": ["-y", "@aether/mcp"],
+        "args": ["-y", "aether-mcp"],
         "env": { "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" }
       }
     }
@@ -123,7 +123,7 @@ In Cline settings → **MCP Servers** → **Edit MCP Settings**:
         "transport": {
           "type": "stdio",
           "command": "npx",
-          "args": ["-y", "@aether/mcp"],
+          "args": ["-y", "aether-mcp"],
           "env": { "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" }
         }
       }
@@ -145,7 +145,7 @@ The combo unlocks the killer reverse-engineering workflow. Install both MCPs in 
     },
     "aether": {
       "command": "npx",
-      "args": ["-y", "@aether/mcp"],
+      "args": ["-y", "aether-mcp"],
       "env": { "AETHER_API_KEY": "ak_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" }
     }
   }

@@ -6,7 +6,7 @@ changes here.
 
 ## What this repo is
 
-**`@aether/mcp`** is a published npm package that exposes uncensored AI tools
+**`aether-mcp`** is a published npm package that exposes uncensored AI tools
 to any [Model Context Protocol](https://modelcontextprotocol.io) client
 (Claude Desktop, Cursor, Cline, Zed, Continue, etc.).
 

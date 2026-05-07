@@ -1,4 +1,4 @@
-# Contributing to @aether/mcp
+# Contributing to aether-mcp
 
 Thanks for considering a contribution. This package is the official MCP client
 for [Aether](https://trynoguard.com), and we welcome PRs for new tools, bug

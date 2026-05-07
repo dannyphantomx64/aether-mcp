@@ -1,5 +1,5 @@
 {
-  "name": "@aether/mcp",
+  "name": "aether-mcp",
   "version": "0.1.0",
   "description": "Uncensored AI tools (chat, image, RE/malware analysis, JS deobfuscation, multi-step research) for Claude Desktop, Cursor, Cline, Zed, and any MCP client.",
   "type": "module",

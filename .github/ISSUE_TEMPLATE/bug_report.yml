@@ -35,9 +35,9 @@ body:
   - type: input
     id: mcp-version
     attributes:
-      label: "@aether/mcp version"
+      label: "aether-mcp version"
       placeholder: e.g. 0.1.0
-      description: Run `npm view @aether/mcp version` if you're not sure.
+      description: Run `npm view aether-mcp version` if you're not sure.
     validations:
       required: true
 
