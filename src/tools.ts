@@ -3,7 +3,22 @@
 
 import type { AetherClient, ChatResult, ImageResult, IdentifyPatternResult } from "./client.js";
 
-export type ToolHandler = (args: Record<string, unknown>) => Promise<{ content: Array<{ type: "text"; text: string }> }>;
+type TextBlock = { type: "text"; text: string };
+type ImageBlock = { type: "image"; data: string; mimeType: string };
+type ContentBlock = TextBlock | ImageBlock;
+
+export type ToolHandler = (args: Record<string, unknown>) => Promise<{ content: ContentBlock[]; isError?: boolean }>;
+
+// Behavioural hints surfaced to the host (Claude Desktop, Cursor, …) so it can
+// badge tools and decide whether to auto-run. See the defaults applied below
+// the TOOLS array.
+export type ToolAnnotations = {
+  title?: string;
+  readOnlyHint?: boolean;
+  destructiveHint?: boolean;
+  idempotentHint?: boolean;
+  openWorldHint?: boolean;
+};
 
 export type ToolDef = {
   name: string;
@@ -13,11 +28,24 @@ export type ToolDef = {
     properties: Record<string, { type: string; description?: string; enum?: string[]; minimum?: number; maximum?: number }>;
     required?: string[];
   };
+  annotations?: ToolAnnotations;
   handler: (client: AetherClient) => ToolHandler;
 };
 
-function txt(text: string) {
+function txt(text: string): { content: ContentBlock[] } {
   return { content: [{ type: "text" as const, text }] };
+}
+
+// Turn data: URLs into MCP image content blocks so hosts render them inline
+// instead of dumping a multi-kB base64 string into the chat. Non-data URLs
+// (hosted links) are surfaced as text.
+function imageContent(images: string[]): ContentBlock[] {
+  return images.map((u) => {
+    const m = /^data:([^;]+);base64,(.*)$/s.exec(u);
+    return m
+      ? ({ type: "image" as const, data: m[2], mimeType: m[1] })
+      : ({ type: "text" as const, text: u });
+  });
 }
 
 function fmtChat(r: ChatResult): string {
@@ -103,7 +131,7 @@ export const TOOLS: ToolDef[] = [
   {
     name: "aether_suggest_bypass",
     description:
-      "Given a description of an integrity check, anti-debug check, anti-cheat scan, or DRM mechanism, returns concrete bypass strategies with working code. For legitimate RE, security research, malware analysis, or game modding.",
+      "Given an integrity check, anti-debug check, anti-cheat scan, or DRM mechanism, returns concrete bypass strategies with working code. For legitimate RE, security research, malware analysis, or game modding. Input `check_description`: describe the check in prose (what it scans, when it triggers) OR paste the check's code/asm; include the target arch (x64, arm64, …) if known.",
     inputSchema: {
       type: "object",
       properties: {
@@ -145,7 +173,7 @@ export const TOOLS: ToolDef[] = [
   {
     name: "aether_protocol_dissect",
     description:
-      "Dissect a network packet capture / hex dump into structured fields. Explains framing, opcode tables, encryption hints. Suggests how to replay or fuzz. For multiplayer game protocols, malware C2, custom desktop-app protocols.",
+      "Dissect a binary network protocol into structured fields. Explains framing, opcode tables, encryption hints; suggests how to replay or fuzz. For multiplayer game protocols, malware C2, custom desktop-app protocols. Input `packet`: a hex dump of the raw bytes (e.g. '00 04 5A 4D 00 18 …') OR a prose description of the wire format. NOT for HTTP/JSON text protocols.",
     inputSchema: {
       type: "object",
       properties: {
@@ -163,7 +191,7 @@ export const TOOLS: ToolDef[] = [
   {
     name: "aether_deobfuscate_js",
     description:
-      "De-obfuscate JavaScript (Obfuscator.io, JScrambler, custom rolling-key obfuscators). Returns clean readable code, identifies the obfuscator family, and recovers algorithms (especially API request signing, anti-bot fingerprinting).",
+      "De-obfuscate JavaScript (Obfuscator.io, JScrambler, custom rolling-key obfuscators). Returns clean readable code, identifies the obfuscator family, and recovers algorithms (especially API request signing, anti-bot fingerprinting). Input `code`: paste obfuscated or minified JavaScript SOURCE text — not compiled WebAssembly (use aether_explain_wasm for .wasm).",
     inputSchema: {
       type: "object",
       properties: {
@@ -213,10 +241,8 @@ export const TOOLS: ToolDef[] = [
     },
     handler: (client) => async (args) => {
       const r = await client.post<ImageResult>("/imagine", args);
-      return txt(
-        `Generated ${r.images.length} image(s) with ${r.model}. Credits: ${r.creditsCharged}, balance: ${r.balanceAfter}.\n\n` +
-        r.images.map((u, i) => `Image ${i + 1}:\n${u}`).join("\n\n"),
-      );
+      const summary = `Generated ${r.images.length} image(s) with ${r.model}. Credits: ${r.creditsCharged}, balance: ${r.balanceAfter}.`;
+      return { content: [{ type: "text" as const, text: summary }, ...imageContent(r.images)] };
     },
   },
 
@@ -224,6 +250,8 @@ export const TOOLS: ToolDef[] = [
     name: "aether_balance",
     description: "Get your current Aether credit balance.",
     inputSchema: { type: "object", properties: {} },
+    // The only free, side-effect-free tool — safe for hosts to auto-run.
+    annotations: { readOnlyHint: true, idempotentHint: true },
     handler: (client) => async () => {
       // /api/v1/me returns balance only by design — plan tier, role, and
       // rate-limit caps are intentionally NOT exposed (they made the MCP
@@ -233,3 +261,12 @@ export const TOOLS: ToolDef[] = [
     },
   },
 ];
+
+// Apply default behavioural hints. Every tool reaches the Aether API over the
+// network (openWorldHint). The generative tools SPEND credits, so they are
+// deliberately NOT marked read-only — that could invite hosts to auto-run them
+// and silently cost the user money. Per-tool annotations (e.g. balance's
+// readOnly+idempotent) override these defaults.
+for (const t of TOOLS) {
+  t.annotations = { openWorldHint: true, readOnlyHint: false, ...t.annotations };
+}

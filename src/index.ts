@@ -27,7 +27,7 @@ const client = new AetherClient({ apiKey, baseUrl });
 const server = new Server(
   {
     name: "aether",
-    version: "0.1.1",
+    version: "0.1.2",
   },
   {
     capabilities: {
@@ -42,6 +42,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     name: t.name,
     description: t.description,
     inputSchema: t.inputSchema,
+    ...(t.annotations ? { annotations: t.annotations } : {}),
   })),
 }));
 

@@ -3,7 +3,23 @@
 // messages so the AI client (Claude Desktop, Cursor) shows the user a useful
 // next step (top up, generate a new key, wait for rate limit reset).
 
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
 const DEFAULT_BASE = "https://trynoguard.com";
+
+// Read our own version from package.json so the User-Agent can't drift out of
+// sync with the published version (it was hardcoded "aether-mcp/0.1").
+function pkgVersion(): string {
+  try {
+    const p = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json");
+    return (JSON.parse(readFileSync(p, "utf8")).version as string) ?? "0";
+  } catch {
+    return "0";
+  }
+}
+const USER_AGENT = `aether-mcp/${pkgVersion()}`;
 
 export class AetherClient {
   private apiKey: string;
@@ -21,7 +37,7 @@ export class AetherClient {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
-        "User-Agent": "aether-mcp/0.1",
+        "User-Agent": USER_AGENT,
       },
       body: JSON.stringify(body),
       // No abort signal — MCP clients have their own timeouts.
@@ -33,7 +49,7 @@ export class AetherClient {
     const res = await fetch(`${this.baseUrl}/api/v1${path}`, {
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
-        "User-Agent": "aether-mcp/0.1",
+        "User-Agent": USER_AGENT,
       },
     });
     return parseAetherResponse<T>(res);
