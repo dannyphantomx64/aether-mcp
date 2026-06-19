@@ -70,11 +70,11 @@ test("tool handlers return the MCP content shape with mocked client", async () =
   const mockClient = {
     post: async () => ({ ok: true }),
     get: async () => ({
-      plan: "FREE",
+      // /api/v1/me is balance-only by design (no plan/role/rate). The handler
+      // must ignore any extra fields and never surface plan/rate.
       balance: 145,
       planCredits: 145,
       topupCredits: 0,
-      rate: { limit: 30, remaining: 28, resetAt: "2026-01-01T00:00:00Z" },
     }),
   };
   // The handler is `(client) => async (args) => { ... }` — we treat the mock
@@ -83,6 +83,6 @@ test("tool handlers return the MCP content shape with mocked client", async () =
   const result = await handler({});
   assert.ok(Array.isArray(result.content), "result.content must be an array");
   assert.equal(result.content[0]?.type, "text");
-  assert.match(result.content[0]!.text, /Plan: FREE/);
-  assert.match(result.content[0]!.text, /145/);
+  assert.match(result.content[0]!.text, /Balance: 145/);
+  assert.doesNotMatch(result.content[0]!.text, /Plan:/);
 });

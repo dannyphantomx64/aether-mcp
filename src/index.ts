@@ -27,7 +27,7 @@ const client = new AetherClient({ apiKey, baseUrl });
 const server = new Server(
   {
     name: "aether",
-    version: "0.1.0",
+    version: "0.1.1",
   },
   {
     capabilities: {

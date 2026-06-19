@@ -222,18 +222,14 @@ export const TOOLS: ToolDef[] = [
 
   {
     name: "aether_balance",
-    description: "Get your current Aether credit balance, plan, and rate-limit headroom.",
+    description: "Get your current Aether credit balance.",
     inputSchema: { type: "object", properties: {} },
     handler: (client) => async () => {
-      const r = await client.get<{ plan: string; balance: number; planCredits: number; topupCredits: number; rate: { limit: number; remaining: number; resetAt: string } | null }>("/me");
-      const lines = [
-        `Plan: ${r.plan}`,
-        `Balance: ${r.balance} (${r.planCredits} plan + ${r.topupCredits} top-up)`,
-      ];
-      if (r.rate) {
-        lines.push(`Rate: ${r.rate.remaining}/${r.rate.limit} per hour, resets ${r.rate.resetAt}`);
-      }
-      return txt(lines.join("\n"));
+      // /api/v1/me returns balance only by design — plan tier, role, and
+      // rate-limit caps are intentionally NOT exposed (they made the MCP
+      // status read like privileged/admin access). Show just the balance.
+      const r = await client.get<{ balance: number; planCredits: number; topupCredits: number }>("/me");
+      return txt(`Balance: ${r.balance} credits (${r.planCredits} plan + ${r.topupCredits} top-up)`);
     },
   },
 ];
