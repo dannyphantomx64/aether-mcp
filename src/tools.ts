@@ -65,9 +65,9 @@ export const TOOLS: ToolDef[] = [
         max_tokens: { type: "number", minimum: 64, maximum: 8000, description: "Max output tokens (default 2400)" },
         model: {
           type: "string",
-          enum: ["core", "ultra", "max"],
+          enum: ["core", "ultra"],
           description:
-            "Model tier: core (default, free), ultra (smartest — premium), max (frontier — premium). Premium tiers need purchased credits, otherwise core is used.",
+            "Model tier: core (default, free) or ultra (smartest — premium). Ultra needs purchased credits, otherwise core is used.",
         },
       },
       required: ["prompt"],
@@ -77,7 +77,6 @@ export const TOOLS: ToolDef[] = [
       const MODEL_MAP: Record<string, string | undefined> = {
         core: undefined, gemma: undefined,
         ultra: "claude-opus-4-6", opus: "claude-opus-4-6",
-        max: "grok-4-3", grok: "grok-4-3",
       };
       const { model, ...rest } = args as Record<string, unknown>;
       const modelId = typeof model === "string" ? MODEL_MAP[model.toLowerCase()] : undefined;
