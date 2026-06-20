@@ -63,11 +63,25 @@ export const TOOLS: ToolDef[] = [
         prompt: { type: "string", description: "The full prompt or question." },
         temperature: { type: "number", minimum: 0, maximum: 2, description: "0-2, default 0.6" },
         max_tokens: { type: "number", minimum: 64, maximum: 8000, description: "Max output tokens (default 2400)" },
+        model: {
+          type: "string",
+          enum: ["core", "ultra", "max"],
+          description:
+            "Model tier: core (default, free), ultra (smartest — premium), max (frontier — premium). Premium tiers need purchased credits, otherwise core is used.",
+        },
       },
       required: ["prompt"],
     },
     handler: (client) => async (args) => {
-      const r = await client.post<ChatResult>("/chat", args);
+      // Translate the friendly tier name to a real model id (server gates premium).
+      const MODEL_MAP: Record<string, string | undefined> = {
+        core: undefined, gemma: undefined,
+        ultra: "claude-opus-4-6", opus: "claude-opus-4-6",
+        max: "grok-4-3", grok: "grok-4-3",
+      };
+      const { model, ...rest } = args as Record<string, unknown>;
+      const modelId = typeof model === "string" ? MODEL_MAP[model.toLowerCase()] : undefined;
+      const r = await client.post<ChatResult>("/chat", { ...rest, ...(modelId ? { model: modelId } : {}) });
       return txt(fmtChat(r));
     },
   },
