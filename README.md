@@ -193,6 +193,8 @@ MIT
 ## Links
 
 - [Aether website](https://trynoguard.com)
+- [All Aether tools](https://trynoguard.com/tools) — MCP, agent CLI, and DevTools extension overview
+- [Learn](https://trynoguard.com/learn) — free articles on reverse engineering, security, deobfuscation, and uncensored AI
 - [Account / API keys](https://trynoguard.com/account)
 - [Top up credits](https://trynoguard.com/pay)
 - [Discord](https://discord.gg/qNbppsTnQM)
